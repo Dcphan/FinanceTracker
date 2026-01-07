@@ -3,8 +3,8 @@ from models.auth import UserCreate, UserRetreive
 from database.session import get_db_connection, Account
 from sqlalchemy.orm import Session
 from database.helpers import data_exists
-from database.auth import hashed_password, verify_password
-
+from utils.security import hashed_password, verify_password, jwt_encode, verify_jwt
+from config.setting import Settings
 
 """
 Auth.py is responsible for the API that related to user signup/signin process. 
@@ -31,12 +31,18 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db_connection)
     db.refresh(new_user)
     return new_user
 
-@router.get("/login", response_model=UserRetreive)
+@router.get("/login")
 async def login(email, password, db: Session = Depends(get_db_connection)):
     # Get the User Account
     user = db.query(Account).filter(Account.email == email).first()
     if not user or not verify_password(password, user.password_hash):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Invalid Email or Password")
-    return user
+    # Generate a return jwt token
+    access_token = jwt_encode(user.id, 5, Settings.JWT_SECRET_KEY) 
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/jwt/verify")
+async def verify(token):
+    return verify_jwt(token, Settings.JWT_SECRET_KEY)
 
 
