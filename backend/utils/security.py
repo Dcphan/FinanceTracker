@@ -25,7 +25,7 @@ def jwt_encode(user_id, refresh_time: int, secret_key, encoding_algorithm: str='
     return econded_jwt
 
 
-def verify_jwt(token, secret_key, encoding_algorithm: str='HS256') -> dict:
+def verify_jwt_signature(token, secret_key, encoding_algorithm: str='HS256') -> dict:
     try:
         payload = jwt.decode(token, secret_key, encoding_algorithm)
         return payload
@@ -33,5 +33,3 @@ def verify_jwt(token, secret_key, encoding_algorithm: str='HS256') -> dict:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED ,detail="Token Has Expired")
     except InvalidTokenError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid Token Error: {e}")
-
-    

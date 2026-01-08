@@ -13,3 +13,6 @@ class UserRetreive(BaseModel):
     name: str
     created_at: datetime
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
