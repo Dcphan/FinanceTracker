@@ -54,5 +54,5 @@ async def login(response: Response, payload: UserLogin, db: Session = Depends(ge
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/refresh")
-async def refresh():
-    stmt = select(SessionStorage).where()
+async def refresh(request):
+    print(request)
