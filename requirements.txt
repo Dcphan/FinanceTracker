@@ -1,0 +1,11 @@
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+sqlalchemy==2.0.25
+asyncpg==0.29.0
+pydantic==2.6.1
+pydantic-settings
+python-dotenv
+psycopg2-binary
+pydantic[email]
+pwdlib[argon2]
+pyjwt

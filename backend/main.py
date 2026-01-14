@@ -1,9 +1,16 @@
 from fastapi import FastAPI
-from routers import auth
+from routers import auth, database
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-app.include_router(auth.router)
+
+routers = [
+    auth.router,
+    database.router
+]
+
+for router in routers:
+    app.include_router(router)
 
 allowed_orgin = [
     "http://localhost:5173"

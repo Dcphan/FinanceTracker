@@ -2,13 +2,9 @@ import psycopg2
 from sqlalchemy import create_engine, Column, Integer, Text, String, DateTime, ForeignKey, CheckConstraint, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-import os
+from config.setting import Settings
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL") 
-
-engine = create_engine(DATABASE_URL)
+engine = create_engine(Settings.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -45,8 +41,16 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
+class SessionStorage(Base):
+    __tablename__ = "session"
+
+    refresh_token = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, primary_key=True)
+    create_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    expired_at = Column(DateTime(timezone=True), nullable=False)
 
 
+ # Method   
 def get_db_connection():
     db = SessionLocal()
     try:
@@ -54,4 +58,5 @@ def get_db_connection():
     finally:
         db.close()
 
-
+def create_table():
+    Base.metadata.create_all(bind=engine)
