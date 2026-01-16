@@ -1,15 +1,14 @@
 import { createContext, useCallback ,useContext, useState, useEffect, useMemo } from 'react';
 
 type User = {
-  id: number;
   email: string;
   name: string;
 };
 
 type AuthContextValue = {
     // state
-    //user: User;
-    //accessToken: string | null;
+    user: User | null;
+    accessToken: string | null;
 
     // action
     login: (email: string, password: string) => Promise<LoginResult>;
@@ -55,6 +54,7 @@ export function AuthProvider({ children, baseUrl = "http://localhost:8000" }: { 
         }
     }, [baseUrl]
   );
+  
 
     const value = useMemo<AuthContextValue>(
         () => ({
@@ -62,6 +62,7 @@ export function AuthProvider({ children, baseUrl = "http://localhost:8000" }: { 
         }),
         [login]
     );
+    
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
   
 }
